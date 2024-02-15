@@ -32,7 +32,7 @@ const CategoryList = () => {
   ];
 
   return (
-    <div className="categories-container">
+    <div className="categories-list-container">
       {categories.map((category) => {
         return <CategoryItem key={category.id} category={category} />;
       })}
