@@ -8,7 +8,7 @@ import {
   createUserDocumentFromAuth,
 } from "../../utils/firebase.utils";
 
-import "./sign-up-form.styles.scss";
+import "./register-form.styles.scss";
 
 // default form fields
 const defaultFormFields = {
@@ -18,7 +18,7 @@ const defaultFormFields = {
   confirmPassword: "",
 };
 
-const SignUpForm = () => {
+const RegisterForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields); // set the form fields state with the default form fields
   const { displayName, email, password, confirmPassword } = formFields; // destructure the form fields
 
@@ -63,7 +63,7 @@ const SignUpForm = () => {
   return (
     <div className="sign-up-container">
       <h2>Don't have an account?</h2>
-      <span> Sign up with your email and password</span>
+      <span> Register with your email and password</span>
       <form onSubmit={handleSubmit}>
         <FormInput
           label="Display name"
@@ -105,10 +105,10 @@ const SignUpForm = () => {
             value: confirmPassword,
           }}
         />
-        <Button type="submit">Sign up</Button>
+        <Button type="submit">Register</Button>
       </form>
     </div>
   );
 };
 
-export default SignUpForm;
+export default RegisterForm;
