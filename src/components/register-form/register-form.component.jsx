@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
@@ -7,6 +7,8 @@ import {
   createUserWithEmailAndPasswordFromAuth,
   createUserDocumentFromAuth,
 } from "../../utils/firebase.utils";
+
+import { UserContext } from "../../contexts/user.context";
 
 import "./register-form.styles.scss";
 
@@ -22,11 +24,13 @@ const RegisterForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields); // set the form fields state with the default form fields
   const { displayName, email, password, confirmPassword } = formFields; // destructure the form fields
 
+  const { setCurrentUser } = useContext(UserContext); // destructure the setCurrentUser from the user context
+
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
 
-  const handleSubmit = async (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault(); // prevent the default form submission
 
     if (password !== confirmPassword) {
@@ -39,6 +43,8 @@ const RegisterForm = () => {
         email,
         password
       ); // create user with email and password
+
+      setCurrentUser(user); // set the current user with the user id and user object
 
       await createUserDocumentFromAuth(user, { displayName }); // create user document from the user auth object with the display name
 
@@ -63,8 +69,8 @@ const RegisterForm = () => {
   return (
     <div className="sign-up-container">
       <h2>Don't have an account?</h2>
-      <span> Register with your email and password</span>
-      <form onSubmit={handleSubmit}>
+      <span> Register</span>
+      <form onSubmit={handleRegister}>
         <FormInput
           label="Display name"
           inputOptions={{

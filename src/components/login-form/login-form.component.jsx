@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+
+import FormInput from "../form-input/form-input.component";
+import Button from "../button/button.component";
+
+import { UserContext } from "../../contexts/user.context";
 
 import {
   signInWithGooglePopup,
   createUserDocumentFromAuth,
   signInAuthUserWithEmailAndPassword,
 } from "../../utils/firebase.utils";
-
-import FormInput from "../form-input/form-input.component";
-import Button from "../button/button.component";
 
 import "./login-form.styles.scss";
 
@@ -20,19 +22,23 @@ const LoginForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
+  const { setCurrentUser } = useContext(UserContext);
+
   const signInWithGoogle = async () => {
     const { user } = await signInWithGooglePopup(); // sign in with Google popup
     createUserDocumentFromAuth(user); // create user document from the user auth object
   };
 
-  const handleSubmit = async (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault(); // prevent the default form submission
 
     try {
-      const response = await signInAuthUserWithEmailAndPassword(
+      const { user } = await signInAuthUserWithEmailAndPassword(
         email,
         password
       ); // sign in user with email and password
+
+      setCurrentUser(user); // set the current user context with the response
 
       setFormFields(defaultFormFields); // reset the form fields
     } catch (error) {
@@ -53,8 +59,8 @@ const LoginForm = () => {
   return (
     <div className="sign-in-container">
       <h2>Already have an account?</h2>
-      <span>Log in with your email and password</span>
-      <form onSubmit={handleSubmit}>
+      <span>Login</span>
+      <form onSubmit={handleLogin}>
         <FormInput
           label="Email"
           inputOptions={{
