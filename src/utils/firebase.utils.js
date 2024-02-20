@@ -3,9 +3,10 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
-  //   signInWithRedirect,
+  signInWithRedirect,
   signInWithPopup,
   GoogleAuthProvider,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -19,20 +20,29 @@ const firebaseConfig = {
   appId: "1:476751905364:web:8e5a9c2b7bad1d5d0ca3c1",
 };
 
-const app = initializeApp(firebaseConfig); // initialize the firebase app with the firebase config
+const firebaseApp = initializeApp(firebaseConfig); // initialize the firebase app with the firebase config
 
-const provider = new GoogleAuthProvider(); // create a new GoogleAuthProvider instance
+const googleProvider = new GoogleAuthProvider(); // create a new GoogleAuthProvider instance
 
-provider.setCustomParameters({ prompt: "select_account" }); // always trigger the google popup whenever we use the GoogleAuthProvider for authentication and sign in
+googleProvider.setCustomParameters({ prompt: "select_account" }); // always trigger the google popup whenever we use the GoogleAuthProvider for authentication and sign in
 
-export const auth = getAuth(app); // get the auth service from the firebase app
+export const auth = getAuth(firebaseApp); // get the auth service from the firebase app
 
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider); // sign in with Google popup
+export const signInWithGooglePopup = () =>
+  signInWithPopup(auth, googleProvider); // sign in with Google popup
+
+export const signInWithGoogleRedirect = () =>
+  signInWithRedirect(auth, googleProvider); // sign in with Google redirect
 
 export const db = getFirestore(); // get the firestore db service from the firebase app
 
 // create user document from the user auth object
-export const createUserDocumentFromAuth = async (userAuth) => {
+export const createUserDocumentFromAuth = async (
+  userAuth,
+  additionalInformation = {}
+) => {
+  if (!userAuth) return; // if the user auth object does not exist, return
+
   const userDocRef = doc(db, "users", userAuth.uid); // get the user document reference from the firestore db
 
   //   console.log(userDocRef);
@@ -52,10 +62,20 @@ export const createUserDocumentFromAuth = async (userAuth) => {
         displayName,
         email,
         createdAt,
+        ...additionalInformation,
       }); // set the user document with the display name, email, and created date
     } catch (error) {
       console.error("Error creating user", error.message);
     }
   }
   return userDocRef; // return the user document reference
+};
+
+export const createUserWithEmailAndPasswordFromAuth = async (
+  email,
+  password
+) => {
+  if (!email || !password) return; // if the email or password does not exist, return
+
+  return await createUserWithEmailAndPassword(auth, email, password); // create user with email and password
 };
