@@ -1,13 +1,10 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 
-import { UserContext } from "../../contexts/user.context";
-
 import {
   signInWithGooglePopup,
-  createUserDocumentFromAuth,
   signInAuthUserWithEmailAndPassword,
 } from "../../utils/firebase.utils";
 
@@ -22,24 +19,14 @@ const LoginForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
-  const { setCurrentUser } = useContext(UserContext);
-
   const signInWithGoogle = async () => {
-    const { user } = await signInWithGooglePopup(); // sign in with Google popup
-    createUserDocumentFromAuth(user); // create user document from the user auth object
+    await signInWithGooglePopup(); // sign in with Google popup
   };
 
   const handleLogin = async (event) => {
     event.preventDefault(); // prevent the default form submission
-
     try {
-      const { user } = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      ); // sign in user with email and password
-
-      setCurrentUser(user); // set the current user context with the response
-
+      await signInAuthUserWithEmailAndPassword(email, password); // sign in user with email and password
       setFormFields(defaultFormFields); // reset the form fields
     } catch (error) {
       if (error.code === "auth/invalid-credential") {
@@ -52,7 +39,6 @@ const LoginForm = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target; // destructure the name and value from the event target
-
     setFormFields({ ...formFields, [name]: value }); // set the form fields with the name and value
   };
 

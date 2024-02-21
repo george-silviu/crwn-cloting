@@ -10,12 +10,7 @@ import { logoutUser } from "../../utils/firebase.utils";
 import "./navigation.styles.scss";
 
 const Navigation = () => {
-  const { currentUser, setCurrentUser } = useContext(UserContext); // get the currentUser from the UserContext; this triggers a re-render when the currentUser changes
-
-  const handleLogout = async () => {
-    await logoutUser();
-    setCurrentUser(null);
-  };
+  const { currentUser } = useContext(UserContext); // get the currentUser from the UserContext; this triggers a re-render when the currentUser changes
 
   return (
     <Fragment>
@@ -30,7 +25,7 @@ const Navigation = () => {
           </Link>
 
           {currentUser ? (
-            <span className="nav-link" onClick={handleLogout}>
+            <span className="nav-link" onClick={logoutUser}>
               Logout
             </span>
           ) : (

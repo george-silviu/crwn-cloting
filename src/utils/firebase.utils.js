@@ -9,6 +9,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged, //used to listen for changes in the user's sign-in state
 } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -44,21 +45,11 @@ export const createUserDocumentFromAuth = async (
   additionalInformation = {}
 ) => {
   if (!userAuth) return; // if the user auth object does not exist, return
-
   const userDocRef = doc(db, "users", userAuth.uid); // get the user document reference from the firestore db
-
-  //   console.log(userDocRef);
-
   const userSnapshot = await getDoc(userDocRef); // get the user document snapshot from the user document reference
-
-  //   console.log(userSnapshot);
-  //   console.log(userSnapshot.exists());
-
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth; // get the display name and email from the user auth object
-
     const createdAt = new Date(); // get the current date and time
-
     try {
       await setDoc(userDocRef, {
         displayName,
@@ -78,16 +69,20 @@ export const createUserWithEmailAndPasswordFromAuth = async (
   password
 ) => {
   if (!email || !password) return; // if the email or password does not exist, return
-
   return await createUserWithEmailAndPassword(auth, email, password); // create user with email and password
 };
 
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return; // if the email or password does not exist, return
-
   return await signInWithEmailAndPassword(auth, email, password); // create user with email and password
 };
 
 export const logoutUser = async () => {
   return await signOut(auth); // sign out user
+};
+
+// listen for changes in the user's sign-in state
+export const onAuthStateChangedListener = (callback) => {
+  if (!callback) return;
+  return onAuthStateChanged(auth, callback);
 };
