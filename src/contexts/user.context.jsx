@@ -15,7 +15,7 @@ export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const value = { currentUser, setCurrentUser };
 
-  //listen for changes in the user's sign-in state
+  //listen for changes in the user's sign-in state : implementation of Observer Pattern
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener((user) => {
       if (user) {
