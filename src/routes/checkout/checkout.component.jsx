@@ -6,42 +6,34 @@ import { CartContext } from "../../contexts/cart.context";
 
 import "./checkout.styles.scss";
 
+const HEADER_BLOCKS = [
+  { header: "Product" },
+  { header: "Description" },
+  { header: "Quantiy" },
+  { header: "Price" },
+  { header: "Remove" },
+];
+
 const Checkout = () => {
-  const { cartItems, addItemToCart, removeItemFromCart, deleteItemFromCart } =
-    useContext(CartContext);
+  const { cartItems, total } = useContext(CartContext);
 
   return (
     <div className="checkout-container">
       <div className="checkout-header ">
-        <div className="header-block">
-          <span>Product</span>
-        </div>
-        <div className="header-block">
-          <span>Description</span>
-        </div>
-        <div className="header-block">
-          <span>Quantiy</span>
-        </div>
-        <div className="header-block">
-          <span>Price</span>
-        </div>
-        <div className="header-block">
-          <span>Remove</span>
-        </div>
+        {HEADER_BLOCKS.map((block, index) => {
+          const { header } = block;
+          return (
+            <div key={index} className="header-block">
+              <span>{header}</span>
+            </div>
+          );
+        })}
       </div>
 
       {cartItems.map((cartItem) => {
-        return (
-          <CheckoutItem
-            key={cartItem.id}
-            cartItem={cartItem}
-            addItemToCart={addItemToCart}
-            removeItemFromCart={removeItemFromCart}
-            deleteItemFromCart={deleteItemFromCart}
-          />
-        );
+        return <CheckoutItem key={cartItem.id} cartItem={cartItem} />;
       })}
-      <span className="total">Total: 0</span>
+      <span className="total">Total: {total} €</span>
     </div>
   );
 };
