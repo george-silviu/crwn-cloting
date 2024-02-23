@@ -1,4 +1,4 @@
-import CategoryList from "../../components/category-list/category-list.component";
+import Directory from "../../components/directory/directory.component";
 
 const Home = () => {
   const categories = [
@@ -28,7 +28,7 @@ const Home = () => {
       imageUrl: "https://i.ibb.co/R70vBrQ/men.png",
     },
   ];
-  return <CategoryList categories={categories} />;
+  return <Directory categories={categories} />;
 };
 
 export default Home;
