@@ -5,6 +5,8 @@ import {
   onAuthStateChangedListener,
 } from "../utils/firebase.utils";
 
+import { createAction } from "../utils/reducer/reducer.utils";
+
 //the actual value you want to access
 export const UserContext = createContext({
   currentUser: null,
@@ -20,9 +22,6 @@ export const USER_ACTION_TYPES = {
 };
 
 const userReducer = (state, action) => {
-  console.log("dispatched");
-  console.log(action);
-
   const { type, payload } = action;
 
   switch (type) {
@@ -40,12 +39,9 @@ export const UserProvider = ({ children }) => {
   const [state, dispach] = useReducer(userReducer, INITIAL_STATE);
 
   const { currentUser } = state;
-  console.log("currentUser", currentUser);
+
   const setCurrentUser = (user) => {
-    dispach({
-      type: USER_ACTION_TYPES.SET_CURRENT_USER,
-      payload: user,
-    });
+    dispach(createAction(USER_ACTION_TYPES.SET_CURRENT_USER, user));
   };
 
   const value = { currentUser, setCurrentUser };
