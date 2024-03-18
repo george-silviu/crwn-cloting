@@ -4,9 +4,8 @@ import localStorage from "redux-persist/lib/storage"; // defaults to localStorag
 import logger from "redux-logger";
 import createSagaMiddleware from "redux-saga";
 
-import { rootSaga } from "./root-saga";
-
 import { rootReducer } from "./root-reducer";
+import { rootSaga } from "./root-saga";
 
 //redux-persist config
 const persistConfig = {
@@ -32,9 +31,13 @@ const composeEnhancer =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
   compose;
 
-const composeEnhancers = composeEnhancer(applyMiddleware(...middleWares));
+const composedEnhancers = composeEnhancer(applyMiddleware(...middleWares));
 
-export const store = createStore(persistedReducer, undefined, composeEnhancers);
+export const store = createStore(
+  persistedReducer,
+  undefined,
+  composedEnhancers
+);
 
 sagaMiddleware.run(rootSaga);
 
