@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 
 import {
   createUserDocumentFromAuth,
+  getCurrentUser,
   onAuthStateChangedListener,
 } from "./utils/firebase.utils";
 
@@ -17,16 +18,11 @@ import { setCurrentUser } from "../src/store/user/user.action";
 function App() {
   const dispatch = useDispatch();
 
-  //listen for changes in the user's sign-in state : implementation of Observer Pattern
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
-      if (user) {
-        createUserDocumentFromAuth(user); // create user document from the user auth object
-      }
-      dispatch(setCurrentUser(user));
+    getCurrentUser().then((user) => {
+      return console.log(user);
     });
-    return () => unsubscribe();
-  }, [dispatch]);
+  }, []);
 
   return (
     <Routes>
