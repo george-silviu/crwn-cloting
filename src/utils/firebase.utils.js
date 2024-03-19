@@ -98,7 +98,7 @@ export const createUserDocumentFromAuth = async (
       console.error("Error creating user", error.message);
     }
   }
-  return userDocRef; // return the user document reference
+  return userSnapshot;
 };
 
 export const createUserWithEmailAndPasswordFromAuth = async (
@@ -111,6 +111,7 @@ export const createUserWithEmailAndPasswordFromAuth = async (
 
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return; // if the email or password does not exist, return
+
   return await signInWithEmailAndPassword(auth, email, password); // create user with email and password
 };
 

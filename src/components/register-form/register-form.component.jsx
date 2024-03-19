@@ -1,12 +1,10 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 
-import {
-  createUserWithEmailAndPasswordFromAuth,
-  createUserDocumentFromAuth,
-} from "../../utils/firebase.utils";
+import { signUpStart } from "../../store/user/user.action";
 
 import "./register-form.styles.scss";
 
@@ -19,26 +17,24 @@ const defaultFormFields = {
 };
 
 const RegisterForm = () => {
-  const [formFields, setFormFields] = useState(defaultFormFields); // set the form fields state with the default form fields
-  const { displayName, email, password, confirmPassword } = formFields; // destructure the form fields
+  const [formFields, setFormFields] = useState(defaultFormFields);
+  const { displayName, email, password, confirmPassword } = formFields;
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
 
+  const dispatch = useDispatch();
+
   const handleRegister = async (event) => {
-    event.preventDefault(); // prevent the default form submission
+    event.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match"); // alert the user if the passwords do not match
+      alert("Passwords do not match");
       return;
     }
     try {
-      const { user } = await createUserWithEmailAndPasswordFromAuth(
-        email,
-        password
-      ); // create user with email and password
-      await createUserDocumentFromAuth(user, { displayName }); // create user document from the user auth object with the display name
-      resetFormFields(); // reset the form fields
+      dispatch(signUpStart(email, password, displayName));
+      resetFormFields();
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         alert("Cannot create userm, email already in use");
