@@ -1,5 +1,5 @@
 /**
- * Redux toolkit includes redux-thunk by default, so you don't need to install it separately.
+ * Redux toolkit includes redux-thunk, non serializable middleware, and Immer
  */
 
 //import { compose, createStore, applyMiddleware } from "redux";
@@ -33,7 +33,8 @@ const middleWares = [process.env.NODE_ENV === "development" && logger].filter(
 
 export const store = configureStore({
   reducer: rootReducer,
-  //middleware: middleWares,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(middleWares),
 });
 
 // export const persistor = persistStore(store);

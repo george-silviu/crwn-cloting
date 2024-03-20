@@ -12,7 +12,7 @@ import Home from "./routes/home/home.component";
 import Shop from "./routes/shop/shop.component";
 import Authentication from "./routes/authentication/authentication.component";
 import Checkout from "./routes/checkout/checkout.component";
-import { setCurrentUser } from "../src/store/user/user.action";
+import { setCurrentUser } from "./store/user/user.slice";
 
 function App() {
   const dispatch = useDispatch();
@@ -23,7 +23,11 @@ function App() {
       if (user) {
         createUserDocumentFromAuth(user); // create user document from the user auth object
       }
-      dispatch(setCurrentUser(user));
+
+      const pickedUser =
+        user && (({ accessToken, email }) => ({ accessToken, email }))(user);
+
+      dispatch(setCurrentUser(pickedUser));
     });
     return () => unsubscribe();
   }, []);
