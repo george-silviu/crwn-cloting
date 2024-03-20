@@ -4,22 +4,22 @@
 
 //import { compose, createStore, applyMiddleware } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
-// import { persistStore, persistReducer } from "redux-persist";
-// import localStorage from "redux-persist/lib/storage"; // defaults to localStorage for web
+import { persistStore, persistReducer } from "redux-persist";
+import localStorage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import logger from "redux-logger";
 
 import { rootReducer } from "./root-reducer";
 
 // //redux-persist config
-// const persistConfig = {
-//   key: "root",
-//   storage: localStorage,
-//   blacklist: ["user"],
-// };
+const persistConfig = {
+  key: "root",
+  storage: localStorage,
+  whitelist: ["cart"],
+};
 
-// const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const middleWares = [process.env.NODE_ENV === "development" && logger].filter(
+const middleWares = [process.env.NODE_ENV !== "production" && logger].filter(
   Boolean
 );
 
@@ -32,9 +32,14 @@ const middleWares = [process.env.NODE_ENV === "development" && logger].filter(
 // const composeEnhancers = composeEnhancer(applyMiddleware(...middleWares));
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(middleWares),
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action typess
+        ignoredActions: ["persist/PERSIST"],
+      },
+    }).concat(middleWares),
 });
 
-// export const persistor = persistStore(store);
+export const persistor = persistStore(store);
