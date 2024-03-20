@@ -1,6 +1,6 @@
-import { CART_ACTION_TYPES } from "./cart.types";
-import { createAction } from "../../utils/reducer/reducer.utils";
+import { createSlice } from "@reduxjs/toolkit";
 
+/**HELPER FUNCTIONS */
 const addCartItem = (cartItems, productToAdd) => {
   //find if productToAdd already exists in cartItems
   const existingCartItem = cartItems.find(
@@ -40,20 +40,39 @@ const clearCartItem = (cartItems, productToDelete) => {
   return cartItems.filter((cartItem) => cartItem.id !== productToDelete.id);
 };
 
-export const setCartIsOpen = (boolean) =>
-  createAction(CART_ACTION_TYPES.SET_CART_IS_OPEN, boolean);
-
-export const addItemToCart = (cartItems, productToAdd) => {
-  const newCartItems = addCartItem(cartItems, productToAdd);
-  return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
+/** CART INITIAL STATE */
+export const CART_INITIAL_STATE = {
+  isCartOpen: false,
+  cartItems: [],
+  cartCount: 0,
+  cartTotal: 0,
 };
 
-export const removeItemFromCart = (cartItems, productToRemove) => {
-  const newCartItems = removeCartItem(cartItems, productToRemove);
-  return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
-};
+/**CART SLICE */
+export const cartSlice = createSlice({
+  name: "cart",
+  initialState: CART_INITIAL_STATE,
+  reducers: {
+    addItemToCart(state, action) {
+      state.cartItems = addCartItem(state.cartItems, action.payload);
+    },
+    removeItemFromCart(state, action) {
+      state.cartItems = removeCartItem(state.cartItems, action.payload);
+    },
+    clearItemFromCart(state, action) {
+      state.cartItems = clearCartItem(state.cartItems, action.payload);
+    },
+    setCartIsOpen(state, action) {
+      state.isCartOpen = action.payload;
+    },
+  },
+});
 
-export const clearItemFromCart = (cartItems, productToDelete) => {
-  const newCartItems = clearCartItem(cartItems, productToDelete);
-  return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
-};
+export const {
+  setCartIsOpen,
+  addItemToCart,
+  removeItemFromCart,
+  clearItemFromCart,
+} = cartSlice.actions;
+
+export const cartReducer = cartSlice.reducer;
