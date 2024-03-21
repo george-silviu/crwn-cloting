@@ -6,7 +6,7 @@ import Button from "../button/button.component";
 import {
   createUserWithEmailAndPasswordFromAuth,
   createUserDocumentFromAuth,
-} from "../../utils/firebase.utils";
+} from "../../utils/firebase/firebase.utils";
 
 import "./register-form.styles.scss";
 

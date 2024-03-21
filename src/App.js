@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import {
   createUserDocumentFromAuth,
   onAuthStateChangedListener,
-} from "./utils/firebase.utils";
+} from "./utils/firebase/firebase.utils";
 
 import Navigation from "./routes/navigation/navigation.component";
 import Home from "./routes/home/home.component";
